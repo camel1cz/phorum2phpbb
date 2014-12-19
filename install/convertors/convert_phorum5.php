@@ -11,40 +11,10 @@
 */
 
 /**
-* NOTE this code is based on phpBB 2.0.x to phpBB 3.0.x convertor from stock
+* This code is based on phpBB 2.0.x to phpBB 3.0.x convertor from stock
 * instalation of phpBB 3.0.5
-*
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-*
-* This code is alpha quality! Use at your own risk and DO BACKUP everythin, this
-* code may affect / at least the target database. Some tables are truncated before
-* import!
-*
-* It implements only the minimal set of features. PMs, avatars, user permissions
-* and a lot of other settings is silently ignored.
-*
-* Try it out, improve it, share it :-)
-*
-* It would be nice to know if this code helped ;)
-*
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-* !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!
-*
 */
 
-/*
-* Change Log:
-*
-* 2009/07/12 First alpha release. Functions renamed to phorum5_ prefix.
-*
-* 2009/07/10 Start of development.
-*
-*
-* @ignore
-*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -397,8 +367,16 @@ if (!$get_info)
 					user_group_auth(\'registered\', \'SELECT user_id, {REGISTERED} FROM ' . USERS_TABLE . ' WHERE user_id > ' . $config['increment_user_id'] . '\', true);
 				',
 
+				'query_last'	=> array(
+					// first delete membership of existing users
+					array('target', 'DELETE FROM ' . USER_GROUP_TABLE . ' WHERE user_id IN (SELECT user_id FROM ' . USERS_TABLE . ' WHERE group_id = 2) AND group_id IN (2, 7)'),
+					// grant membership
+					array('target', 'INSERT INTO ' . USER_GROUP_TABLE . '(group_id, user_id, group_leader, user_pending) SELECT 2,user_id,0,0 FROM ' . USERS_TABLE . ' WHERE group_id = 2'),
+					array('target', 'INSERT INTO ' . USER_GROUP_TABLE . '(group_id, user_id, group_leader, user_pending) SELECT 7,user_id,0,0 FROM ' . USERS_TABLE . ' WHERE group_id = 2')
+				),
+
 				array('user_id',				'users.user_id',					'phorum5_user_id'),
-				array('user_type',				2,				''), // normal users TODO: active?
+				array('user_type',				0,				''), // normal users
 				array('group_id',				2,					'str_to_primary_group'), // TODO: relays on default return value of registered users group id: all are members of "Registered users"
 				array('user_regdate',			'users.date_added',				''),
 				array('username',				'users.username',					'phorum5_set_default_encoding'), // recode to utf8 with default lang
