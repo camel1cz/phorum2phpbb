@@ -24,6 +24,7 @@ Feel free to leave feedback and/or contribute.
 
 ### Changelog
 
+2018/11/12 - updated description, clarified the attachments handling
 2014/12/19 - imported users was not members of any group, now they are
              automatically put in groups "new users" and "registered users"
            - internal type of imported users fixed
@@ -38,6 +39,9 @@ Feel free to leave feedback and/or contribute.
 - during installation of phpbb, there will be available conversion from Phorum
 
 ### After conversion
+
+Attachment files are not handeled! If you have the files stored in files on disk, copy the attachments folder from phorum into files folder of phpbb.
+In case, your phorum installation was set to store attachments into database, use 'store files on disk' module to convert the phorum attachments (in database) to attachments on disk (thanks to <a href="https://github.com/classofoutcasts">classofoutcasts</a>)
 
 Don't forget to do some final steps after conversion:
 - Resyncronize statistics
